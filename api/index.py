@@ -6,14 +6,16 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    # Caminho para o seu arquivo CSV que está na raiz
-    csv_path = os.path.join(os.getcwd(), 'imigrantes_canada.csv')
+    # Isso busca o arquivo independente de onde a Vercel coloque a pasta api
+    base_path = os.path.dirname(os.path.abspath(file))
+    # Sobe um nível para sair da pasta 'api' e achar o CSV na raiz
+    csv_path = os.path.join(base_path, '..', 'imigrantes_canada.csv')
     
     try:
+        if not os.path.exists(csv_path):
+            return f"Erro: Arquivo CSV não encontrado no caminho: {csv_path}"
+            
         df = pd.read_csv(csv_path)
-        # Retorna as 5 primeiras linhas como HTML
         return f"<h1>Análise de Imigrantes</h1> {df.head().to_html()}"
     except Exception as e:
-        return f"Erro ao ler o arquivo: {str(e)}"
-
-# A Vercel precisa que a variável seja 'app'
+        return f"Erro ao processar os dados: {str(e)}"
