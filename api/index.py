@@ -6,16 +6,39 @@ app = Flask(__name__)
 
 @app.route('/')
 def home():
-    # Isso busca o arquivo independente de onde a Vercel coloque a pasta api
-    base_path = os.path.dirname(os.path.abspath(file))
-    # Sobe um nível para sair da pasta 'api' e achar o CSV na raiz
-    csv_path = os.path.join(base_path, '..', 'imigrantes_canada.csv')
-    
     try:
+        # Pega o caminho absoluto da pasta onde este arquivo (index.py) está
+        diretorio_atual = os.path.dirname(os.path.abspath(__file__))
+        
+        # Se o CSV estiver na RAIZ do projeto e o index.py dentro de /api:
+        csv_path = os.path.join(diretorio_atual, '..', 'imigrantes_canada.csv')
+
+        
+        # Caso o CSV esteja na MESMA PASTA que este index.py, use:
+        # csv_path = os.path.join(diretorio_atual, 'imigrantes_canada.csv')
+
         if not os.path.exists(csv_path):
-            return f"Erro: Arquivo CSV não encontrado no caminho: {csv_path}"
+            return f"Erro: Arquivo não encontrado em: {csv_path}"
             
+        # Lê o CSV especificando o encoding (evita erro de acentuação)
         df = pd.read_csv(csv_path)
-        return f"<h1>Análise de Imigrantes</h1> {df.head().to_html()}"
+        
+        # Transforma os dados em HTML
+        tabela = df.head().to_html(classes='table table-striped')
+        
+        return f"""
+        <html>
+            <head><title>Análise Canadá</title></head>
+            <body>
+                <h1>✅ Conectado com Sucesso!</h1>
+                <p>Abaixo os primeiros 5 registros do arquivo:</p>
+                {tabela}
+            </body>
+        </html>
+        """
     except Exception as e:
-        return f"Erro ao processar os dados: {str(e)}"
+        return f"<h1>❌ Erro no Servidor</h1><p>{str(e)}</p>"
+
+# Importante para rodar localmente no VS Code
+if __name__ == "__main__":
+    app.run(debug=True)
