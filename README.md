@@ -12,7 +12,7 @@ Este projeto é um dashboard interativo desenvolvido em Python e Flask que visua
 
 ## 🚀 Como Rodar o Projeto Localmente
 1. Clone o repositório:
-   git clone https://github.com/SEU_USUARIO/analize-deimigrantesbrasileirosnocanada.git
+   git clone https://github.com/Cmurilo1/analize-deimigrantesbrasileirosnocanada.git
 2. Instale as dependências:
    pip install -r requirements.txt
 3. Execute a aplicação:
